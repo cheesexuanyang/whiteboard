@@ -1,5 +1,5 @@
 import React from 'react';
-import './ColorPicker.css';
+import './colorPicker.css';
 
 function ColorPicker({ color, setColor }) {
   const presetColors = [

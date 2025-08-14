@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, forwardRef, useImperativeHandle } from 'react';
-import './Canvas.css';
+import './canvas.css';
 
 const Canvas = forwardRef(({ color, brushSize, tool }, ref) => {
   const canvasRef = useRef(null);

@@ -1,5 +1,5 @@
 import React from 'react';
-import './SizePicker.css';
+import './sizePicker/sizePicker.css';
 
 function SizePicker({ brushSize, setBrushSize }) {
   const sizePresets = [2, 5, 10, 15, 20];
