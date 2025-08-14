@@ -1,0 +1,38 @@
+/* Canvas Component Styles */
+
+.canvas-container {
+  display: flex;
+  justify-content: center;
+  padding: 32px;
+}
+
+.canvas-wrapper {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  padding: 16px;
+}
+
+.canvas {
+  cursor: crosshair;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+  display: block;
+}
+
+/* Responsive Design for Canvas */
+@media (max-width: 768px) {
+  .canvas-container {
+    padding: 16px;
+  }
+  
+  .canvas-wrapper {
+    padding: 8px;
+  }
+  
+  .canvas {
+    width: 100%;
+    max-width: 100%;
+  }
+}
