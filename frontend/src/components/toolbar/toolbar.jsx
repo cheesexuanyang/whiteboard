@@ -1,6 +1,6 @@
 import React from 'react';
-import ColorPicker from './colorPicker/ColorPicker';
-import SizePicker from './sizePicker/SizePicker';
+import ColorPicker from '../colorPicker/colourpicker';
+import SizePicker from '../sizepicker/sizepicker';
 import './toolbar.css';
 
 function Toolbar({ 

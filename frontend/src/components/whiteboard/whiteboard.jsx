@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import Toolbar from './toolbar/Toolbar';
-import Canvas from './canvas/Canvas';
+import Toolbar from '../toolbar/toolbar';
+import Canvas from '../canvas/canvas';
 import './whiteboard.css';
 
 function Whiteboard() {
