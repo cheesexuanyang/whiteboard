@@ -36,7 +36,7 @@
   transition: all 0.2s;
   border: none;
   cursor: pointer;
-  background-color: transparent;
+  background-color: #f3f4f6;
   color: #6b7280;
 }
 
@@ -45,13 +45,13 @@
 }
 
 .tool-button.active-brush {
-  background-color: #f3f4f6;
-  color: #111827;
+  background-color: #000000;
+  color: #f3f4f6;
 }
 
 .tool-button.active-eraser {
   background-color: #000000;
-  color: white;
+  color: #f3f4f6;
 }
 
 /* Clear Button */
