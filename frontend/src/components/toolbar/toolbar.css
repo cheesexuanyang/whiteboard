@@ -1,0 +1,83 @@
+/* Toolbar Component Styles */
+
+.toolbar {
+  background-color: white;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #e5e7eb;
+  padding: 16px 24px;
+}
+
+.toolbar-content {
+  max-width: 1152px;
+  margin: 0 auto;
+}
+
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Tool Section */
+.tools-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tool-button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  color: #6b7280;
+}
+
+.tool-button:hover {
+  color: #111827;
+}
+
+.tool-button.active-brush {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+.tool-button.active-eraser {
+  background-color: #000000;
+  color: white;
+}
+
+/* Clear Button */
+.clear-button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  background-color: #ef4444;
+  color: white;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.clear-button:hover {
+  background-color: #dc2626;
+}
+
+/* Responsive Design for Toolbar */
+@media (max-width: 768px) {
+  .toolbar-row {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+}
