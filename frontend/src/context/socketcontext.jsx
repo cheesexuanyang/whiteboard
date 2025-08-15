@@ -113,7 +113,6 @@ export const SocketProvider = ({ children }) => {
     currentUser,
     showWelcomeModal,
     connectToSession,
-    generateUserName,
     generateAvatarColor,
     getInitials,
     addNotification
