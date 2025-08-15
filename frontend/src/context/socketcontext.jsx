@@ -21,84 +21,87 @@ export const SocketProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [showWelcomeModal, setShowWelcomeModal] = useState(true);
 
+  // Call this when the user submits the welcome form
   const connectToSession = (userData) => {
     setIsConnecting(true);
     setCurrentUser(userData);
     setShowWelcomeModal(false);
   };
 
+  // Establish socket connection when a user has been set
   useEffect(() => {
-    if (!currentUser || !isConnecting) return;
+    if (!currentUser) return;
 
-    // Create socket connection
     const newSocket = io('http://localhost:3001', {
       transports: ['websocket'],
       autoConnect: true
     });
 
-    // Connection event handlers
+    // When the socket connects, mark as connected and send user info
     newSocket.on('connect', () => {
       console.log('Connected to server');
       setIsConnected(true);
       setIsConnecting(false);
-      
-      // Send user info after connection
+
       newSocket.emit('user-info', {
         name: currentUser.name,
         avatarColor: currentUser.avatarColor
       });
     });
 
+    // Handle disconnections
     newSocket.on('disconnect', () => {
       console.log('Disconnected from server');
       setIsConnected(false);
       setIsConnecting(false);
     });
 
+    // Handle connection errors gracefully
     newSocket.on('connect_error', (error) => {
       console.error('Connection error:', error);
       setIsConnecting(false);
       addNotification('Failed to connect to server', 'error');
     });
 
-    // User management events
+    // Receive updates about all users
     newSocket.on('users-update', (users) => {
       setConnectedUsers(users);
     });
 
+    // Notify when a new user joins
     newSocket.on('user-joined', (user) => {
-      console.log('User joined:', user.name);
       if (user.id !== newSocket.id) {
         addNotification(`${user.name} joined the session`, 'join');
       }
     });
 
+    // Notify when a user leaves
     newSocket.on('user-left', (userId) => {
-      console.log('User left:', userId);
       const leftUser = connectedUsers.find(u => u.id === userId);
       if (leftUser) {
         addNotification(`${leftUser.name} left the session`, 'leave');
       }
     });
 
+    // Save the socket in state
     setSocket(newSocket);
 
-    // Cleanup on unmount
+    // Clean up on unmount or when currentUser changes
     return () => {
       newSocket.close();
       setSocket(null);
       setIsConnected(false);
       setIsConnecting(false);
     };
-  }, [currentUser, isConnecting]);
+  }, [currentUser]); // Notice: no isConnecting in the deps
 
+  // Adds a notification and removes it after 4 seconds
   const addNotification = (message, type) => {
     const id = Date.now();
     const notification = { id, message, type, timestamp: Date.now() };
-    
+
     setNotifications(prev => [...prev, notification]);
-    
-    // Auto remove notification after 4 seconds
+
     setTimeout(() => {
       setNotifications(prev => prev.filter(n => n.id !== id));
     }, 4000);
