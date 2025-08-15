@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-import { generateUserName, generateAvatarColor } from '/../userutils/userUtils';
+import { generateAvatarColor, getInitials } from '../userutils/userutils';
 
 const SocketContext = createContext();
 
@@ -15,40 +15,50 @@ export const useSocket = () => {
 export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
   const [connectedUsers, setConnectedUsers] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(true);
 
-  // Generate user info on mount
-  useEffect(() => {
-    const userData = {
-      name: generateUserName(),
-      avatarColor: generateAvatarColor()
-    };
+  const connectToSession = (userData) => {
+    setIsConnecting(true);
     setCurrentUser(userData);
-  }, []);
+    setShowWelcomeModal(false);
+  };
 
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser || !isConnecting) return;
 
     // Create socket connection
     const newSocket = io('http://localhost:3001', {
       transports: ['websocket'],
-      query: {
-        userName: currentUser.name,
-        avatarColor: currentUser.avatarColor
-      }
+      autoConnect: true
     });
 
     // Connection event handlers
     newSocket.on('connect', () => {
       console.log('Connected to server');
       setIsConnected(true);
+      setIsConnecting(false);
+      
+      // Send user info after connection
+      newSocket.emit('user-info', {
+        name: currentUser.name,
+        avatarColor: currentUser.avatarColor
+      });
     });
 
     newSocket.on('disconnect', () => {
       console.log('Disconnected from server');
       setIsConnected(false);
+      setIsConnecting(false);
+    });
+
+    newSocket.on('connect_error', (error) => {
+      console.error('Connection error:', error);
+      setIsConnecting(false);
+      addNotification('Failed to connect to server', 'error');
     });
 
     // User management events
@@ -58,12 +68,17 @@ export const SocketProvider = ({ children }) => {
 
     newSocket.on('user-joined', (user) => {
       console.log('User joined:', user.name);
-      addNotification(`${user.name} joined the session`, 'join');
+      if (user.id !== newSocket.id) {
+        addNotification(`${user.name} joined the session`, 'join');
+      }
     });
 
-    newSocket.on('user-left', (user) => {
-      console.log('User left:', user.name);
-      addNotification(`${user.name} left the session`, 'leave');
+    newSocket.on('user-left', (userId) => {
+      console.log('User left:', userId);
+      const leftUser = connectedUsers.find(u => u.id === userId);
+      if (leftUser) {
+        addNotification(`${leftUser.name} left the session`, 'leave');
+      }
     });
 
     setSocket(newSocket);
@@ -71,8 +86,11 @@ export const SocketProvider = ({ children }) => {
     // Cleanup on unmount
     return () => {
       newSocket.close();
+      setSocket(null);
+      setIsConnected(false);
+      setIsConnecting(false);
     };
-  }, [currentUser]);
+  }, [currentUser, isConnecting]);
 
   const addNotification = (message, type) => {
     const id = Date.now();
@@ -89,9 +107,16 @@ export const SocketProvider = ({ children }) => {
   const value = {
     socket,
     isConnected,
+    isConnecting,
     connectedUsers,
     notifications,
-    currentUser
+    currentUser,
+    showWelcomeModal,
+    connectToSession,
+    generateUserName,
+    generateAvatarColor,
+    getInitials,
+    addNotification
   };
 
   return (

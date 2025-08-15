@@ -3,7 +3,7 @@ import Toolbar from '../toolbar/toolbar';
 import Canvas from '../canvas/canvas';
 import UserList from '../userlist/userlist';
 import WelcomeModal from '../welcome/welcome';
-import { useSocket } from '../context/socketcontext';
+import { useSocket } from "../../context/socketcontext";
 import './whiteboard.css';
 
 function Whiteboard() {

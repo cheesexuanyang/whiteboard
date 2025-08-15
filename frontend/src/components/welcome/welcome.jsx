@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSocket } from '../context/socketcontext';
+import { useSocket } from "../../context/socketcontext";
 import './welcome.css';
 
 function WelcomeModal({ isOpen, onJoin }) {

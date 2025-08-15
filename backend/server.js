@@ -25,22 +25,35 @@ let drawingHistory = []; // Store drawing events for new users
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
 
-  // Add user to connected users
-  connectedUsers.set(socket.id, {
-    id: socket.id,
-    color: '#000000',
-    cursor: { x: 0, y: 0 }
+  // Handle user info when they provide it
+  socket.on('user-info', (userData) => {
+    const user = {
+      id: socket.id,
+      name: userData.name,
+      avatarColor: userData.avatarColor,
+      cursor: { x: 0, y: 0 }
+    };
+
+    // Add user to connected users
+    connectedUsers.set(socket.id, user);
+
+    // Send current drawing history to new user
+    socket.emit('drawing-history', drawingHistory);
+
+    // Send current connected users to everyone
+    io.emit('users-update', Array.from(connectedUsers.values()));
+    
+    // Notify others that this user joined
+    socket.broadcast.emit('user-joined', user);
+
+    console.log(`User ${userData.name} joined with ID: ${socket.id}`);
   });
-
-  // Send current drawing history to new user
-  socket.emit('drawing-history', drawingHistory);
-
-  // Send current connected users
-  socket.emit('users-update', Array.from(connectedUsers.values()));
-  socket.broadcast.emit('user-joined', connectedUsers.get(socket.id));
 
   // Handle drawing events
   socket.on('drawing', (data) => {
+    const user = connectedUsers.get(socket.id);
+    if (!user) return;
+
     // Add drawing event to history
     const drawingEvent = {
       ...data,
@@ -91,10 +104,17 @@ io.on('connection', (socket) => {
 
   // Handle disconnect
   socket.on('disconnect', () => {
-    console.log(`User disconnected: ${socket.id}`);
-    connectedUsers.delete(socket.id);
-    socket.broadcast.emit('user-left', socket.id);
-    socket.broadcast.emit('users-update', Array.from(connectedUsers.values()));
+    const user = connectedUsers.get(socket.id);
+    if (user) {
+      console.log(`User ${user.name} disconnected: ${socket.id}`);
+      connectedUsers.delete(socket.id);
+      
+      // Notify others that this user left
+      socket.broadcast.emit('user-left', socket.id);
+      io.emit('users-update', Array.from(connectedUsers.values()));
+    } else {
+      console.log(`Unknown user disconnected: ${socket.id}`);
+    }
   });
 });
 
