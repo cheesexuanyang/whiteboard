@@ -53,7 +53,7 @@ function Whiteboard() {
             ref={canvasRef}
             color={color}
             brushSize={brushSize}
-            tool={tool}   // Pass the active tool so eraser works
+            tool={tool}   
           />
           <UserList />
         </>
