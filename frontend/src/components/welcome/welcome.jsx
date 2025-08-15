@@ -1,26 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { generateAvatarColor } from '../../utils/userUtils';
-import './WelcomeModal.css';
+import { useSocket } from '../context/socketcontext';
+import './welcome.css';
 
 function WelcomeModal({ isOpen, onJoin }) {
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [avatarColor, setAvatarColor] = useState('#3B82F6');
+  
+  const { generateAvatarColor, getInitials } = useSocket();
 
   // Generate random avatar color on mount
   useEffect(() => {
     setAvatarColor(generateAvatarColor());
-  }, []);
-
-  const getInitials = (fullName) => {
-    return fullName
-      .trim()
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase())
-      .join('')
-      .slice(0, 2);
-  };
+  }, [generateAvatarColor]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

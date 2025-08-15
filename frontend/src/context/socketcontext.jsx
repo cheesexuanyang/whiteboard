@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-import { generateUserName, generateAvatarColor } from '../utils/userUtils';
+import { generateUserName, generateAvatarColor } from '/../userutils/userUtils';
 
 const SocketContext = createContext();
 

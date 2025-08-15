@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { useSocket } from '../context/SocketContext';
-import { getInitials } from '../../utils/userUtils';
-import './UserList.css';
+import { useSocket } from '../context/socketcontext';
+import './userlist.css';
 
 function UserList() {
-  const { connectedUsers, isConnected, socket, notifications } = useSocket();
+  const { connectedUsers, isConnected, socket, notifications, getInitials } = useSocket();
   const [showFullList, setShowFullList] = useState(false);
 
   if (!isConnected) {

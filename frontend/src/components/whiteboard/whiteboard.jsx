@@ -1,14 +1,14 @@
 import React, { useState, useRef } from 'react';
 import Toolbar from '../toolbar/toolbar';
 import Canvas from '../canvas/canvas';
-import UserList from '../userList/UserList';
+import UserList from '../userlist/userlist';
 import WelcomeModal from '../welcome/welcome';
 import { useSocket } from '../context/socketcontext';
 import './whiteboard.css';
 
 function Whiteboard() {
   const [color, setColor] = useState('#000000');
-  const [brushSize, setBrushSize] = useState(20);
+  const [brushSize, setBrushSize] = useState(5);
   const [tool, setTool] = useState('brush');
   const canvasRef = useRef(null);
   
@@ -61,10 +61,34 @@ function Whiteboard() {
       
       {/* Loading State */}
       {isConnecting && (
-        <div className="connecting-overlay">
-          <div className="connecting-message">
-            <div className="connecting-spinner"></div>
-            <p>Connecting to session...</p>
+        <div className="connecting-overlay" style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9998
+        }}>
+          <div className="connecting-message" style={{
+            backgroundColor: 'white',
+            padding: '24px',
+            borderRadius: '12px',
+            textAlign: 'center'
+          }}>
+            <div className="connecting-spinner" style={{
+              width: '24px',
+              height: '24px',
+              border: '2px solid #f3f4f6',
+              borderTop: '2px solid #3b82f6',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite',
+              margin: '0 auto 16px'
+            }}></div>
+            <p style={{ margin: 0, color: '#374151' }}>Connecting to session...</p>
           </div>
         </div>
       )}
